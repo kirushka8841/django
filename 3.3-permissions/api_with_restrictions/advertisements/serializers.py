@@ -1,7 +1,7 @@
 from django.contrib.auth.models import User
 from rest_framework import serializers
 
-from advertisements.models import Advertisement
+from advertisements.models import Advertisement, AdvertisementStatusChoices
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -24,6 +24,7 @@ class AdvertisementSerializer(serializers.ModelSerializer):
         model = Advertisement
         fields = ('id', 'title', 'description', 'creator',
                   'status', 'created_at', )
+        read_only_fields = ['creator']
 
     def create(self, validated_data):
         """Метод для создания"""
@@ -36,10 +37,19 @@ class AdvertisementSerializer(serializers.ModelSerializer):
         # само поле при этом объявляется как `read_only=True`
         validated_data["creator"] = self.context["request"].user
         return super().create(validated_data)
+    
+    def update(self, instance, validated_data):
+        instance.title = validated_data.get('title', instance.title)
+        instance.description = validated_data.get('description', instance.description)
+        instance.status = validated_data.get('status', instance.status)
+        instance.save()
+        return instance
 
     def validate(self, data):
         """Метод для валидации. Вызывается при создании и обновлении."""
-
-        # TODO: добавьте требуемую валидацию
-
+        data = super().validate(data)
+        user = self.context['request'].user
+        open_advertisments_count = Advertisement.objects.filter(creator=user, status=AdvertisementStatusChoices.OPEN).count()
+        if open_advertisments_count > 10:
+            raise serializers.ValidationError("У вас максимальное количество открытых объявлений.")
         return data
