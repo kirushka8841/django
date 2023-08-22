@@ -5,6 +5,8 @@ from advertisements.serializers import AdvertisementSerializer
 from advertisements.permissions import IsOwnerOrReadOnly
 from rest_framework.throttling import AnonRateThrottle, UserRateThrottle
 from advertisements.filters import AdvertisementFilter
+from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework.filters import SearchFilter
 
 
 class AdvertisementViewSet(ModelViewSet):
@@ -13,6 +15,7 @@ class AdvertisementViewSet(ModelViewSet):
     serializer_class = AdvertisementSerializer
     throttle_classes = [AnonRateThrottle, UserRateThrottle]
     filter_classes = AdvertisementFilter
+    filter_backends = [DjangoFilterBackend, SearchFilter]
     # TODO: настройте ViewSet, укажите атрибуты для кверисета,
     #   сериализаторов и фильтров
 

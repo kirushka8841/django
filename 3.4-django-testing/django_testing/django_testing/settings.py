@@ -83,6 +83,8 @@ DATABASES = {
         'NAME': 'netology_django_testing',
         'HOST': '127.0.0.1',
         'PORT': '5432',
+        'USER': 'postgres',
+        'PASSWORD': 'Kirushka1488'
     }
 }
 
@@ -124,3 +126,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
 
 STATIC_URL = '/static/'
+
+REST_FRAMEWORK = {
+    'DEFAULT_FILTER_BACKENDS': ['django_filters.rest_framework.DjangoFilterBackend']
+}
