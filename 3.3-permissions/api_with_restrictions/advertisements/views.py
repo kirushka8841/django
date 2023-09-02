@@ -14,7 +14,7 @@ class AdvertisementViewSet(ModelViewSet):
     queryset = Advertisement.objects.all()
     serializer_class = AdvertisementSerializer
     throttle_classes = [AnonRateThrottle, UserRateThrottle]
-    filter_classes = AdvertisementFilter
+    filterset_class = AdvertisementFilter
     filter_backends = [DjangoFilterBackend, SearchFilter]
     # TODO: настройте ViewSet, укажите атрибуты для кверисета,
     #   сериализаторов и фильтров
