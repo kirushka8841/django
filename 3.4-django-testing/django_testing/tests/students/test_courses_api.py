@@ -2,6 +2,7 @@ import pytest
 from rest_framework.test import APIClient
 from students.models import Course, Student
 from model_bakery import baker
+from rest_framework.reverse import reverse
 
 
 @pytest.fixture
@@ -27,14 +28,16 @@ def course_factory():
 def test_get_first_course(client, course_factory):
     # Arrange
     courses = course_factory(_quantity = 5)
-
+    
     # Act
-    response = client.get('/api/v1/courses/')
+    url = reverse('courses-detail', args=(courses[0].id,))
+    response = client.get(url)
 
     # Assert
     data = response.json()
     assert response.status_code == 200
-    assert data[0]['id'] == courses[0].id
+    assert courses[0].id == data.get('id')
+    
 
 
 @pytest.mark.django_db
